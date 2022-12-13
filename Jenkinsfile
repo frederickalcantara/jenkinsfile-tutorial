@@ -1,25 +1,31 @@
 pipeline {
-    agent any 
+    agent {
+        docker {
+            image 'aquasec/trivy:0.35.0'
+        }
+    } 
 
     stages {
         
-        stage("build") {
+        stage("Building Docker Image") {
 
             steps {
-                echo 'building the application...'
+                sh "docker build -t inventory-lord:1.0 ."
+                recordIssues(tools: [trivy(pattern: 'results.json')])
             }
 
         }
 
-				stage("test") {
+		stage("Trivy scanning") {
 
             steps {
-                echo 'testing the application...'
+                sh "trivy image -f json -o results.json inventory-lord:1.0"
+                recordIssues(tools: [trivy(pattern: 'results.json')])
             }
 
         }
 
-				stage("deploy") {
+		stage("deploy") {
 
             steps {
                 echo 'deploying the application...'
