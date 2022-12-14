@@ -23,7 +23,7 @@ pipeline {
 		stage("Trivy scanning") {
 
             steps {
-                sh "docker run aquasec/trivy image inventory-lord:1.0 -f json -o results.json"
+                sh "trivy image inventory-lord:1.0 -f json -o results.json"
                 recordIssues(tools: [trivy(pattern: 'results.json')])
             }
 
