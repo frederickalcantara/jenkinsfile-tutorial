@@ -9,12 +9,6 @@ pipeline {
     }
 
     stages {
-
-        // stage('Test') {
-        //     steps {
-        //         sh 'node --version'
-        //     }
-        // }
         
         stage("Building Docker Image") {
 
