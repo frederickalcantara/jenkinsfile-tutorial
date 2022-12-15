@@ -24,7 +24,7 @@ pipeline {
 
             steps {
                 sh "trivy image inventory-lord:1.0 -f json -o results.json"
-                recordIssues(tools: [trivy(pattern: 'results.json')])
+                inventory-lord:1.0(tools: [trivy(pattern: 'results.json')])
             }
 
         }
