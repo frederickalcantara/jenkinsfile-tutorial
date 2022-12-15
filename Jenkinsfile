@@ -23,11 +23,25 @@ pipeline {
 		stage("Trivy scanning") {
 
             steps {
-                sh "docker run aquasec/trivy image inventory-lord:1.0 -f json -o results.json"
-                recordIssues(tools: [trivy(pattern: 'results.json')])
+                sh "trivy image --format template -t \"/root/templates/html.tpl\" --output report.html inventory-lord:1.0"
             }
 
         }
 
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: "report.html", fingerprint: true
+
+            publishHTML (target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: truem
+                reportDir: '.',
+                reportFiles: 'report.html',
+                reportName: "Trivy Image Vuln Report"
+            ])
+        }
     }
 }
