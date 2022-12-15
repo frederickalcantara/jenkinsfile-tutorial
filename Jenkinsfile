@@ -4,6 +4,10 @@ pipeline {
         label 'trivy'
     } 
 
+    environment {
+        TEMPLATE_PATH="\"@/root/templates/html.tpl\""
+    }
+
     stages {
 
         // stage('Test') {
@@ -23,7 +27,7 @@ pipeline {
 		stage("Trivy scanning") {
 
             steps {
-                sh "trivy image --format template -t \"/root/templates/html.tpl\" --output report.html inventory-lord:1.0"
+                sh "trivy image --format template -t ${TEMPLATE_PATH} --output report.html inventory-lord:1.0"
             }
 
         }
@@ -37,7 +41,7 @@ pipeline {
             publishHTML (target: [
                 allowMissing: false,
                 alwaysLinkToLastBuild: false,
-                keepAll: truem
+                keepAll: true,
                 reportDir: '.',
                 reportFiles: 'report.html',
                 reportName: "Trivy Image Vuln Report"
